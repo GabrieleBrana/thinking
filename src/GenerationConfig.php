@@ -19,6 +19,7 @@ class GenerationConfig implements JsonSerializable
      *     temperature?: float,
      *     topP?: float,
      *     topK?: int,
+     *     thinking_budget?: int,
      * }
      */
     private array $config;
@@ -96,6 +97,16 @@ class GenerationConfig implements JsonSerializable
 
         return $clone;
     }
+    public function withThinkingConfig(int $thinking_budget): self
+    {
+        if($thinking_budget < 0) {
+            throw new UnexpectedValueException('Thinking budget is negative');
+        }
+        $clone = clone $this;
+        $clone->config['thinkingConfig']['thinkingBudget'] = $thinking_budget;
+
+        return $clone;
+    }
 
     /**
      * @return array{
@@ -105,6 +116,7 @@ class GenerationConfig implements JsonSerializable
      *      temperature?: float,
      *      topP?: float,
      *      topK?: int,
+     *      thinkingConfig[thinkingBudget]?: int,
      *  }
      */
     public function jsonSerialize(): array
